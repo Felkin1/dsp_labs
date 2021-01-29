@@ -1,0 +1,317 @@
+\documentclass[10pt,a4paper,twocolumn]{article}
+\setlength{\columnsep}{10mm}
+\usepackage[papersize={210mm,297mm},top=20mm,bottom=20mm,left=18mm,right=18mm]{geometry}
+\usepackage[L7x,T1]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage{times}
+\usepackage[english]{babel}
+\usepackage{indentfirst}
+\setlength{\parindent}{.5cm}
+\usepackage{multirow}
+
+\usepackage{sectsty}
+\sectionfont{\fontsize{10}{10}\selectfont}
+\subsectionfont{\fontsize{10}{10}\selectfont\textit}
+
+\usepackage{graphicx}
+\graphicspath{{./paveikslai/}} % jei paveikslėliai talpinami kitame aplanke
+\usepackage{epstopdf} % for postscript graphics files
+\DeclareGraphicsExtensions{.pdf,.eps,.png,.jpg,.mps}
+\usepackage[labelsep=period,font=small]{caption}
+\captionsetup[table]{justification=justified,singlelinecheck=true,skip=0pt,labelfont=bf}
+\captionsetup[figure]{name=Figure,skip=0pt,labelfont=bf}
+\setlength\belowcaptionskip{-10pt}
+
+%kodo įkėlimas
+\usepackage{listings}
+\lstset{language=Matlab}
+\lstset{flexiblecolumns=true}
+\lstset{morekeywords={matlab2tikz}}
+\lstset{flexiblecolumns=true}
+\lstset{basicstyle=\ttfamily\scriptsize }
+\lstset{lineskip=-4pt }
+
+%opening
+\title{{\large Digital Signal Processing 2020}\\ \vspace{-12pt} 
+{\normalsize{ Laboratory Work nr. 2}}\\
+{\Large \textbf{A Study of Digital Filters}}}
+
+
+\author{\large \textbf{Lukas Stasytis, E MEI-0 gr.} Birutė Paliakaitė, PhD Student \\
+{\normalsize \textit{Kaunas University of Technology, Faculty of Electrical and Electronics Engineering}}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+
+In the following laboratory work, we will be employing digital signal processing techniques, namely - filters, to process an electrocardiogram (EKG) signal[\cite{b1},\cite{b2}]. More specifically, we will be employing: a relatively low order finite impulse response (FIR), a comb infinite impulse response (IIR) and multirate FIR filters. We will conduct a careful study of said filters' characteristics and test their performance on a real EKG data set as well as two standard synthesized testbench signals. The filters are implemented in the Python programming language with a heavy reliance on the Scipy library[\cite{numpy},\cite{scipy},\cite{pyplot}].
+
+
+\section*{Problem statement}
+
+Figure \ref{ekg_1} shows the EKG signal which we will be processing with our filters. The signal is littered with various types of noise \cite{noise} varying from a 50Hz industrial voltage component to a base drift of the signal due to breathing (0.15-0.3Hz) as well as muscle movements in the 2-500Hz band among various other types of noise. Said components severely decrease the clarity of the signal when trying to look for heart-related diseases. We will specifically target the stated three types of noise with lowpass FIR, comb IIR and multirate FIR filters in an attempt to remove said noise.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{ekg_1.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{EKG signal for processing.}
+	\label{ekg_1}
+	\vspace{6pt}
+\end{figure}
+
+\section*{Low-pass FIR filter}
+We start by implementing a 13th order low-pass FIR filter to eliminate high frequency noise from our digital signal. Figure \ref{f1} shows the structural diagram of said filter \cite{lab2_ref}. Being as all the filter coefficients are varying multiplications of our input signal with no recursive components, they can be treated as taps in a FIR type filter and require no additional modifications. From the structural diagram we derive our differential equation \ref{fir_dif} for the filter. 
+
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{fir_struct.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{FIR filter structural diagram.}
+	\label{f1}
+	\vspace{3pt}
+\end{figure}
+
+
+\begin{eqnarray}
+H[z] = \frac{x_0z^{0} + x_1z^{-1} ... + x_{13}z^{-13}}{1}
+\label{fir_dif}
+\end{eqnarray}
+
+
+Figure \ref{f2} bottom left plot shows the impulse response characteristic of our filter. We used our own implementation written in python for the impulse response analysis: a unit impulse sequence is generated and filtered using the lfilter function from the scipy python numerical library using our coefficients. The resulting filtered signal equals our impulse response. We can observe that the impulse response directly matches our filter tap coefficients.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{fir_characteristics.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{FIR filter impulse(bottom left), frequency (top left), phase(top right) responses and z-plane (bottom right).}
+	\label{f2}
+	\vspace{6pt}
+\end{figure}
+
+Following that, we generate the frequency and phase response graphs of our filter (Figure \ref{f2} top left and right graphs). The scipy function freqz is used for this purpose. We keep the frequency x axis non-normalized to have a clear representation of which frequencies our filter is targeting, but limit the frequency axis to the Nyquist rate relative to our sampling rate, the later being 500Hz.
+
+\begin{eqnarray}
+h_{dB} = 20\log_{10}|h|  
+\label{m1}
+\end{eqnarray}
+
+
+Focusing on the frequency response graph first, we may observe three distinct portions of the filter. The first is the pass band, from frequencies 0 to 100Hz (cutoff point). We treat the filter's response at magnitude -3dB as the cutoff point where the pass band ends. Following that we have a transition band, during which values are starting to get filtered. At around 150Hz we see the start of the cutoff band, symbolized by the start of a harmonic oscillation. The peak of these harmonics marks the amount of attenuation applied on the given frequencies. Around -50dB in this filter's case.
+
+In summary, the graph shows that our filter will pass all frequencies from 0 to 100Hz, followed by a -50dB attenuation of the frequencies higher than 150Hz. Thus, our cutoff frequency is 100Hz, our pass band waving is from 0.6dB down to -0.6dB. This waving can cause small signal drift distortions. Our cutoff's largest attenuation is -50dB. A low-pass FIR filter.
+
+The phase characteristic shows a partially direct phase response, which is important for judging if a given filter will not phase shift different signal components by varying time periods, as opposed to the same for each component. Given the partially direct response in our case, we conclude that the filter is not going to distort the signal.
+
+Lastly, we generate the z plane of our filter. To do this, we take our coefficients again and calculate the roots of each array. Plotting the real and imaginary portions of each value against each other on a plane results in the zero values in the case of b coefficient roots and the poles in the case of a coefficients. The z plane can be seen in figure \ref{f2} bottom right graph. We note that a cuttoff is marked for real and imaginary absolute values larger than 1. Values falling outside of this range constitute as unstable and imply our filter becoming a generator. The main points of observation are a.) the absence of any poles, given that this is a FIR filter and b.) none of the zeros being present outside out boundary, implying a stable system and c.) Zeros closer to the edges, which imply higher dampening effects, being on the higher frequency side of the z plane, further implying that we do have a low-pass filter ready to be used on our EKG dataset.
+
+
+
+\section*{Comb IIR filter}
+
+We now design a comb IIR filter for eliminating signal drift and the additional noise component of industrial voltage. This filter would follow the previously outlined FIR filter as a second pipeline stage for processing the EKG signal. The comb filter features a unique characteristic of filtering only specific periodic frequencies (and their adjacent frequencies) $f_0$ while the remaining are all passed. Figure \ref{f5}  shows the theoretical frequency response characteristic of said comb filter\cite{lab2_ref}.  Parameter $K_0$ marks our passband attenuation (in our case 1, meaning no attenuation), $K_r$ marks the amplitude at which we judge our cutoff band width at each frequency period. In our case, this parameter has to equal -3dB. Parameter $\Delta f$ marks the width of frequencies being cutoff starting at amplitude $K_r$. Parameter $K$ marks the maximum attenuation at each cutoff frequency period. Lastly, parameter $f_0$ marks the actual cutoff frequency which we are filtering. Subsequent periods to filter are marked $kf_0$. $f_d$ marks our sampling frequency. We use the niquist rate of our sampling frequency for plotting the frequency spectrum.
+
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.80\columnwidth]{comb_theo.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{IIR comb filter theoretical frequency response.}
+	\label{f5}
+	\vspace{6pt}
+\end{figure}
+
+
+Figure \ref{f6} shows the structural diagram of our comb filter. We can see that the filter is an IIR filter given the fact that the output of the filter is recursively fed back into it via the $k_3$ boosted value. $Z^{-N}$. In total, we have three coefficients which we need to calculate and divide into $a$ and $b$ coefficient arrays.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.80\columnwidth]{comb_struct.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{IIR comb filter structural diagram.}
+	\label{f6}
+	\vspace{6pt}
+\end{figure}
+
+Equations \ref{m5} to \ref{mlast} were used for obtaining the $k_1, k_2, k_3$ coefficients. This includes all the math operations necessary to obtain the filter coefficients given a set of hyper parameters. Notable values are $f_d$ - our sampling frequency, $S$ - our attenuation at the cutoff bands and $L$ - the decibel magnitude at which we measure our cutoff band's width.
+
+
+\begin{eqnarray}
+\label{m5}
+K = K_0 \cdot 10^{-\frac{S}{20}} \\
+K_r = K_0 \dot 10^{-\frac{L}{20}} \\
+N = \frac{f_d}{f_0} \\
+\beta = \sqrt{\frac{K_r^2 - K_0^2}{K^2-K_r^2}} \cdot \tan{(\frac{N\pi\cdot \Delta f}{2f_d})} \\
+k_1 = \frac{K_0+K\beta}{1+\beta} \\
+k_2 = \frac{K_0-K\beta}{1+\beta} \\
+k_3 = \frac{1 - \beta}{1+\beta}
+\label{mlast}
+\end{eqnarray}
+
+
+
+We obtained the following coefficients (Table 1) with starting hyperparameters of: $S = 40dB$, $\Delta F = 0.52$, $f_0 = 50$, $k_0 = 1$ and $L = 3$. 
+
+
+\begin{table}[!h]
+\label{tabl1}
+\caption{k parameters of the comb filter}
+\begin{tabular}{ccccc}
+\hline
+\multicolumn{1}{c}{} $\beta$ & 0.0163 &  &  &  \\ \hline
+$k_{1}$ & 0.984  &  &  &  \\ \hline
+$k_{2}$ & 0.983  &  &  &  \\ \hline
+$k_{3}$ & 0.967  &  &  &  \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+
+
+For the sake of clarity, we also append the final b and a coefficient arrays, Table 2. 9x0 symbolizes 9 padded zeroes in between the first and final element of each array.
+
+\begin{table}[!h]
+\label{tabl2}
+\caption{a and b arrays of the comb filter.}
+\begin{tabular}{cccc}
+\hline
+\multicolumn{1}{c}{} a & 1   & 9x0 & $-k_{3}$  \\ \hline
+b & $k_{1}$ & 9x0 & $-k_{2}$ \\ \hline
+\end{tabular}
+\end{table}
+
+The resulting differential equation of the filter is as follows in equation \ref{iir_dif}
+
+\begin{eqnarray}
+H(z) = \frac{0.984 - 0.983z^{-10}}{1 - 0.967z^{-10}}
+\label{iir_dif}
+\end{eqnarray}
+
+
+
+We now look at the impulse, frequency and phase responses of our filter. Figure \ref{f_iir_ch}. The impulse response (bottom left graph) has two unit impulses at the first and final n values. This aligns with our calculated b coefficient array.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{iir_char.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{IIR comb filter impulse(bottom left), frequency (top left), phase(top right) responses and z-plane (bottom right).}
+	\label{f_iir_ch}
+	\vspace{6pt}
+\end{figure}
+
+
+
+The frequency response ended up closely matching the theoretical frequency response graph as can be seen in Figure \ref{f_iir_ch} top left graph. Notable is the difference in maximum attenuations are the cutoff frequencies. In theory, we were supposed to have around -50dB attenuation at 50Hz periods. In our case, the comb filter has a -10dB attenuation at 100Hz and 150Hz frequencies and symmetrically falls off, while having a full -50dB attenuation at frequency 0. Multiple attempts were made at trying to generate a filter with even attenuations at each period to no success. The author is confident in the calculated $k_1$ to $k_3$ coefficients and can only speculate that there is a difference in matlab's filter and scipy's lfilter function implementations. However, the filter was successful in eliminating some of the signal drift and did seem to filter the industrial voltage component to a degree as will be shown in the results section. Thus, the author concludes the result as satisfactory enough for the purposes of exploring the filter's inner workings.
+
+
+The frequency response at the 50Hz frequency has a narrow 0.67Hz cutoff band at the -3dB magnitude. The 0.67Hz value was chosen based on the American Health Association standard.
+
+
+The phase response shows a harmonic phase following the cutoff frequency period. We expected the phases in radians to be even at the positive and negative peaks of each frequency period, but are satisfied enough with the result being harmonic.
+
+Lastly, the z plane (Figure \ref{f_iir_ch} bottom right graph) shows the poles and zeroes all aligning very closely and staying within the absolute 1 value limits, signaling that the filter is stable and dampening specific frequencies at a narrow band (as a result of the poles being very close to zeroes.
+
+We also note that an additional normalization step was done before comb filtering and de-normalization step after. Without this step, the filter caused massive drift in the synthesized tests. We see no negative impact of this scheme on our EKG signal.
+
+
+\section*{Multirate FIR filter}
+Lastly, we design a multirate lowpass FIR filter \cite{multir} for eliminating system drift as opposed to using the comb IIR filter. The idea of our multirate filter is to decimate our input signal to a lower sampling frequency, then apply a higher order lowpass FIR filter and finally interpolate the filtered signal back into the original frequency. By doing the additional decimation and interpolation steps, we provide an essentially quantisized signal for the FIR filter to compute with much smaller computation requirements. Essentially, we trade precision for getting a relatively higher order filter for a given sampling frequency.
+
+Figure \ref{f7} shows a structural diagram of our filtering scheme. We divide our decimation and interpolation operations into two stages each to decrease the amount of relative re-sampling happening between stages. The reason for this is because we are required to apply an additional FIR filtering operation before each decimation and after each interpolation operation to eliminate additional aliasing generated as a result of the re-sampling operations. These FIR filters would require larger orders, and thus more computations, if we did large sampling rate jumps at a time.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{multirate.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Multirate FIR filter structural diagram.}
+	\label{f7}
+	\vspace{6pt}
+\end{figure}
+
+
+A non-trivial decision is the selection of decimation and interpolation degrees. We solve equation \ref{m10}+\ref{m102} to obtain parameter $M$ - our re-sampling degree. In this equation, $f_{sl}$ equals our cutoff minimum frequency, $f_{pr}$ equals the pass band maximum frequency. We also know that our cutoff frequency proper should not be larger than 0.67Hz as discussed in the comb filter section. Using equations \ref{m11} to \ref{m14} we concluded that our $M$ should be around 50, $D_1$ - 10, $D_2$ - 5. While the actual $M$ value we obtained was 58, we round it to be dividable from 500 (our sampling rate). In the end, we had five separate lowpass FIR filters of the orders: $[37,15,6,15,37]$.
+
+\begin{eqnarray}
+\label{m10}
+(f_{sl}^2-f_{pr}^2)M^3 - (f_{sl}+f_{pr})^2M^2 + \\
+\label{m102}
++ 2f_d(f_{sl}+f_{pr})M - f_d^2 = 0
+\end{eqnarray}
+
+
+\begin{eqnarray}
+\label{m11}
+D_{1,opt} = \frac{2M(1-\sqrt{MF/(2-F)})}{2-F(M+1)} \\
+F = \frac{f_{sl} - f_{pr}}{f_{sl}} \\
+M = D_1 \cdot D_2 \\
+D_{2,opt} = \frac{M}{D_{1opt}}
+\label{m14}
+\end{eqnarray}
+
+\section*{Results}
+
+We will now be presenting the results of applying all three of our filters on one of the input EKG signals in the dataset. Additionally, we ran triangle and rectangle synthesized signal tests (EN 60601-2-51 standard \cite{standard}) on the IIR comb and multirate FIR filters.
+
+Firstly, in Figure \ref{res1}, we can see our initial EKG signal passing the lowpass FIR filter and IIR comb filter.  The upper two plots show a signal with, both, high frequency and a low frequency drift components. We may also observe a frequency spike at 50Hz and 150Hz. These are the harmonic voltage components we want to remove. The middle plots feature our FIR filtered signal. Looking at the time domain, we observe a decrease in overall high frequency components through the signal. This is more evident when looking at the frequency domain, where effectively all frequencies beyond 50Hz were increasingly dampened. The final set of plots features the comb filter result. There is a noticeable change in the overall curvature of the signal as well as a massive decrease in high frequency components. The frequency domain has large dampening spikes at frequencies 50Hz,100Hz etc. These were the industrial voltage components we were trying to remove. 
+
+After additionally running triangle and rectangle synthesized tests, our comb filter had a 250 $\mu V$ slope error in the rectangle test and a 3.3 percent dampening error in the triangle test. The rectangle test failed to meet the 150 $\mu V$ maximum slope error requirement.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[h]
+	\centering
+	\includegraphics*[width= .5\columnwidth]{comb_test.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Comb IIR filter test on rectangle and triangle synthesized signals.}
+	\label{comb_test}
+	\vspace{6pt}
+\end{figure}
+
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[h]
+	\centering
+	\includegraphics*[width=.95\columnwidth]{res1.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{EKG signal filtering with a lowpass FIR filter and a comb IIR filter.}
+	\label{res1}
+	\vspace{6pt}
+\end{figure}
+
+
+Next, we look at the multirate FIR filter results. Figure \ref{multirate_test}. The middle plot features the extracted drift component of the initial signal. We can observe a very clear correspondence between this component and the initial signal. The third plot is the result of subtracting the drift component, we can see a very clear elimination of all drift in the signal.
+
+The rectangle test on our multirate filter has a 150 $\mu V$ slope error at around 5 percent of the rectangles and under 50 $\mu V$ in the rest, while the triangle test has a dampening error of $6 \cdot 10^{-5}$. The filter had a substantially higher test performance than the comb filter.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.95\columnwidth]{multirate_test.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{EKG signal filtering with a multirate FIR filter.}
+	\label{multirate_test}
+	\vspace{6pt}
+\end{figure}
+
+\section*{Conclusions}
+In this laboratory work, we designed, implemented and tested three separate digital signal processing filters: a.) a lowpass FIR filter, b.) a comb IIR filter, c.) a multirate FIR filter. The filters proved effective at eliminating signal noise from our EKG dataset. The comb filter did not pass the rectangle test, which we consider to be a result of an overly large attenuation rate. The multirate FIR filter, on the other hand, flawlessly passed the tests and eliminated signal drift with extreme precision.
+
+\section*{Bibliography}
+\bibliographystyle{IEEEtran_bp}
+\renewcommand\refname{}
+\vspace*{-24pt}
+\makeatother
+\bibliography{saltiniai} % bibliografijos tvarkymo failas
+
+\section*{Appendix}
+
+\subsection*{Source code}
+\onecolumn
+%\lstinputlisting{./kodas/lab2_python_source.py} % nurodomas ir tiksli direktorija, kurioje yra kodas
+
+
+\end{document}

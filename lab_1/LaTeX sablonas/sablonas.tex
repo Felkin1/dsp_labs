@@ -1,0 +1,349 @@
+\documentclass[10pt,a4paper,twocolumn]{article}
+\setlength{\columnsep}{10mm}
+\usepackage[papersize={210mm,297mm},top=20mm,bottom=20mm,left=18mm,right=18mm]{geometry}
+\usepackage[L7x,T1]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage{times}
+\usepackage[lithuanian]{babel}
+\usepackage{indentfirst}
+\setlength{\parindent}{.5cm}
+\usepackage{multirow}
+
+\usepackage{sectsty}
+\sectionfont{\fontsize{10}{10}\selectfont}
+\subsectionfont{\fontsize{10}{10}\selectfont\textit}
+
+\usepackage{graphicx}
+\graphicspath{{./paveikslai/}} % jei paveikslėliai talpinami kitame aplanke
+\usepackage{epstopdf} % for postscript graphics files
+\DeclareGraphicsExtensions{.pdf,.eps,.png,.jpg,.mps}
+\usepackage[labelsep=period,font=small]{caption}
+\captionsetup[table]{justification=justified,singlelinecheck=true,skip=0pt,labelfont=bf}
+\captionsetup[figure]{name=pav,skip=0pt,labelfont=bf}
+\setlength\belowcaptionskip{-10pt}
+
+%kodo įkėlimas
+\usepackage{listings}
+\lstset{language=Matlab}
+\lstset{flexiblecolumns=true}
+\lstset{morekeywords={matlab2tikz}}
+\lstset{flexiblecolumns=true}
+\lstset{basicstyle=\ttfamily\scriptsize }
+\lstset{lineskip=-4pt }
+
+%opening
+\title{{\large SKAITMENINIŲ SIGNALŲ APDOROJIMAS 2020}\\ \vspace{-12pt} 
+{\normalsize{ Laboratorinis darbas nr. 1}}\\
+{\Large \textbf{Diskretinių laiko sistemų modeliavimas}}}
+
+
+\author{\large \textbf{Lukas Stasytis, E MEI-0 gr.} Dėstytojas prof. V. Marozas\\
+{\normalsize \textit{Kauno technologijos universitetas, Elektros ir elektronikos fakultetas}}}
+
+
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Įvadas}
+
+Šio laboratorinio darbo tikslas yra išmokti modeliuoti diskretinio laiko sistemas ir tirti jų laikines bei dažnines charakteristikas. Šiam tikslui įgyvendinti, modeliuosime gitaros stygų akordą ir pritaikysime iškraipymo bei reverberacijos efektus. Taip pat pritaikysime amplitudinę ir žiedinę moduliacijas.
+
+Tolesnėse skiltyse bus aptariami individualūs signalų apdorojimo metodai su rezultatais pasekoje kiekvienos skilties. Pradėsime nuo vienos natos modeliavimo, tada pareisime prie pilno akordo ir galiausiai pritaikysime įvairius moduliavimo metodus sumodeliuoto akordo signalui transformuoti.
+
+
+\section*{Vienos natos modeliavimas}
+
+\subsection*{Karplus ir Strong algoritmas}
+Gitaros skambesiui išgauti naudosimės Karplus ir Strong styginių instrumentų garsų sintezės algoritmu \cite{karplus-strong}. Gitaros modeliavimui bus pritaikomas neribotos impulsinės reakcijos (NIR) filtras. (pav \ref{karplus_strong}). Iš struktūrinės schemos galime pastebėti, kad mums reikės vėlinimo koeficiento N bei filtro koeficientų a ir b. 
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{strong_diagrama.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Gitaros natos modeliavimo schema.}
+	\label{karplus_strong}
+	\vspace{6pt}
+\end{figure}
+
+
+\subsection*{NIR filtro vėlinimo radimas}
+
+Visų pirma, turime surasti natos vėlinimo koeficientą, kuris reikalingas NIR filtrui. Šis koeficientas, mums nurodys per kiek atskaitų turime žiūrėti atgal savo jau sugeneruotas išvestis, generuojant naujas išvestis. Pavyzdžiui, jeigu turėtume $N = 3$ ir naudotume elementarų filtrą, tokį kaip formulėje \ref{f0}, mūsų sekanti atskaitos išėjimo reikšmė būtų lygi trimis reikšmėmis seniau sugeneruotai reikšmei. Generavimą pradėsime po pradinės atsitiktinio trukšmo aibės, dėl to už aibės ribų neišeisime.
+
+\begin{eqnarray}
+y[n] = y[n-N]
+\label{f0}
+\end{eqnarray}
+
+NIR filtro vėlinimą galime surasti garso signalo diskretizavimo dažnį $(f_d)$ padalinus iš stygos virpėjimo dažnio $(f_s)$: lygtis \ref{f1}
+
+\begin{eqnarray}
+N = \frac{f_d}{f_s}
+\label{f1}
+\end{eqnarray}
+
+Mūsų atveju, diskretizavimo dažnis $f_d$ = 44100 Hz. Pirmoji nata kurios signalą generuosime turi virpėjimo dažnį $f_s$ = 165 Hz. Svarbu paminėti, kad vėlinimo reikšmė turi būti sveikas skaičius, nes, tai reikšmė nurodanti kelintą narį naudosime. Dėl to suapvalinsime gautą rezultatą.
+
+\ref{d} pateikiamas D natos vėlinimo apskaičiavimas:
+
+
+\begin{eqnarray}
+N_D = round(\frac{44100}{165}) = 267
+\label{d}
+\end{eqnarray}
+
+
+
+\subsection*{A ir B koeficientų radimas}
+
+
+Ieškant $A$ ir $B$ koeficientų, pasinaudosime gitaros natos modeliavimo schemai atitinkančia skirtumine lygtimi \ref{karplus_strong_strukturine}
+
+Signalo įėjimo atskaitos žymimos $x$ simboliu, o įšėjimo - $y$. 
+
+\begin{eqnarray}
+y[n] = x[n] + \frac{y[n-N] + y[n-N-1]}{2}
+\label{karplus_strong_strukturine}
+\end{eqnarray}
+
+
+Lygtį pasikeičiame į Z ašį ir išsikeliame įėjimo signalo atskaitas į lygties viršų, o įšėjimo atskaitas - apačią, kaip matoma \ref{f3}, \ref{f4} bei \ref{f5} lygtyse. Verta pastebėti, kad apatinės lygties reikšmės keičia ženklą ir pridedamas vienetas.
+
+\begin{eqnarray}
+y[z] = x(z)^0 + 0.5y(z)^{-N} + 0.5y(z)^{-N-1}
+\label{f3}
+\end{eqnarray}
+
+
+
+\begin{eqnarray}
+H[z] = \frac{Y[z]}{X[z]} = \frac{x(Z)^0}{0.5y(Z)^{-N} + 0.5y(Z)^{-N-1}}
+\label{f4}
+\end{eqnarray}
+
+\begin{eqnarray}
+H[z] = \frac{1}{1 -0.5z^{-N} -0.5z^{-N-1}}
+\label{f5}
+\end{eqnarray}
+
+
+$a$ koeficientas bus lygties viršutinis narys, ženklo nekeičiant.
+
+$b$ koeficientais bus lygties apatiniai nariai. Visi nenaudojami nariai lygus nuliui. Šiuo atveju, jų kiekis bus lygus N-3.
+
+\begin{eqnarray}
+b = [1,0,...,0,-0.5,-0.5] \\
+a = [1]
+\end{eqnarray}
+
+
+\subsection*{Signalo generavimas}
+
+Signalą generuosime $t_s$ = 3 s trukmės. Signalo pirmos N reikšmių turi būti atsitiktinis triukšmas intervale [0,1]. Likusios reikmės iš pradžių turėtų būti lygios 0. Šių reikšmių kiekį galime sužinoti iš bendro signalo diskretinių taškų kieko atėmus triukšmo kiekį. Diskretinių reikšmių kiekis yra lygus tiesiog diskretizavimo dažnio bei signalo trukmės sekundėmis sandaugai:
+
+
+\begin{eqnarray}
+K_D = f_d \cdot t_s - N_D \\
+K_D = 44100 \cdot 3 - 267 = 132033
+\end{eqnarray}
+
+
+Galiausiai, gautą signalą normalizuojame į intervalą [-1,1]. Tai atliekame iš signalo atimdami jo vidurkį ir gautą signalą padalindami iš gauto signalo modulio maksimumo.
+
+Visoms operacijoms naudojame python programavimo kalbos numpy,scipy bei pyplot paketus\cite{numpy},\cite{scipy},\cite{pyplot}. NIR filtrui panaudojame scipy funkciją $lfilter$ \cite{lfilter} kuri atitinka matlab funkciją $filter$.
+
+Pav \ref{D_B}. pavaizduotos sumodeliuotos $D$ ir $B$ stygos. Informacija pateikiama laiko bei dažnių srityse. Matome laike slopstantį signalą su didžiaja dalimi diskretinių reikšmių pasiskirčiusių apie -50db. Taigi, signalas iš pradžių turėjo ženklų aukštos amplitudės garsą ir tada pradėjo slopti.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.9\columnwidth]{d_b.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Gitaros natų D ir B laiko ir dažnių grafikai}
+	\label{D_B}
+	\vspace{6pt}
+\end{figure}
+
+
+Norėdami geriau paanalizuoti signalus, apribosime laiko srities atvaizduotas atskaitas į pirmų 0.07 sekundžių po atsitiktinio triukšmo, o dažnių srities - pirmus 1000 Hz. Rezultatai pavaizduoti Pav \ref{D_B2}.
+
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.9\columnwidth]{d_b2.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Gitaros natų D ir B laiko ir dažnių grafikai apribojus X ašis.}
+	\label{D_B2}
+	\vspace{6pt}
+\end{figure}
+
+Stebint dažnių sritis, iš karto galime pastebėti, kaip susidariusios harmonikos turi periodą atitinkantį simuliuojamų stygų dažniams. $D$ stygos dažnis 165 Hz bei $B$ stygos dažnis 262 Hz sudaro proporcingai beveik dvigubai ilgesnius stygų dažnių periodus.
+
+Tuo metu laiko srityje matosi tie patys periodai amplitudėje, kurie daug tankesni D stygos atveju.
+
+
+\section*{Akordo generavimas}
+
+Akordui generuoti naudosime penkias stygas: A,D,G,B,e. Stygų dažniai pateikiami lentelėje nr \ref{dazniu_lentele}.
+
+\begin{table}[!h] % Gera svetainė susigeneruoti lenteles online: https://www.tablesgenerator.com/
+\caption{Generuojamą akordą sudarančių stygų dažnių lentelė}
+\label{dazniu_lentele}
+\begin{tabular}{lccccc}
+\hline
+\multicolumn{1}{c}{} & A & D & G & B & e \\ \hline
+Hz & 110 & 165 & 220 & 262 & 330 \\ \hline
+\end{tabular}
+\end{table}
+
+Akordui sugeneruoti, mes generuojame kiekvieną individualią stygą, ją normuojame, suvėliname per 50ms ir tada susumuojame signalus. Vėlinimas realizuojamas pastumiant kiekvienos stygos signalą į dešinę per 50ms atitinkančius diskretizavimo taškus pateiktam signalo diskretizavimo dažniui, tada likusias laisvas vietas kairėje užpildant nulinėmis reikšmėmis.
+
+Reikšmių sumavimas atliekamas elementariai susumuojant individualių stygų amplitudes ties kiekvienu diskretinių tašku.
+
+Pav \ref{akordas_1}. pavaizduotas sumodeliuotas stygų akordas. Informacija pateikiama laiko bei dažnių srityse. Matome daug triukšmingesnius signalus, negu individualių stygų atveju. Kiekviena styga įvedė savo papildomo triukšmo į signalą.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.9\columnwidth]{akordas_1.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Gitaros akordo sumodeliuoto signalo laiko ir dažnių grafikai}
+	\label{akordas_1}
+	\vspace{6pt}
+\end{figure}
+
+Pav \ref{akordas_2}. pateikiamas apribotos X ašies vaizdas. Galime pastebėti pirmas penkias harmonikas dažnių srityje bei antros, suvėlintos, stygos pradžia praėjus 50ms po pirmosios generavimo pradžios. Tarpai tarp harmonikų sąlyginai sutampa su pačių natų dažniais.
+
+
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.9\columnwidth]{akordas_2.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Gitaros akordo sumodeliuoto signalo laiko ir dažnių grafikai apribojus X ašis.}
+	\label{akordas_2}
+	\vspace{6pt}
+\end{figure}
+
+\section*{Papildomų efektų modeliavimas}
+\subsection*{Iškraipymų efektas}
+
+Iškraipymo efektui išgauti sustiprinsime ankstesniu akordo generavimo metodu išgautą signalą K kartų ir tada apribosime jo amplitudę [-1,1] ribose. Eksperimentui panaudosime tris K reikšmes: [1,5,50].
+
+\ref{akordas_3} pav. pavaizduoti šio stiprinimo rezultatai žiūrint tik į pirmus  kelis šimtus reikšmių. Matomas ryškus amplitudžių 'suaštrėjimas', daugeliui tolygių perėjimų iš neigiamų reikšmių į teigiamas pavirtus į staigius perėjimus. Dažnių srityje signalas taip pat prarado daug savo tolygumo perėjimuose. Susidarė savotiškas signalo triukšmas. $K=5$ koeficiento signalas dar yra pakenčiamas ir skamba kaip roko muzikos, tačiau keliant reikšmę link $K=50$ garsas tampa tiesiog aukšto dažnio triukšmu.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.9\columnwidth]{akordas_3.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Gitaros akordo sumodeliuoto signalo laiko ir dažnių grafikai su iškraipymo efektais.}
+	\label{akordas_3}
+	\vspace{6pt}
+\end{figure}
+
+
+\subsection*{Reverberacijos efektas}
+
+Reverberacijos efektui išgauti naudosime skaitmeninį neribotos impulsinės reakcijos filtrą. Struktūrinė diagrama pateikiama \ref{reverb_1} pav.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.9\columnwidth]{reverb_schema.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Reverberacijos efekto modeliavimo schema.}
+	\label{reverb_1}
+	\vspace{6pt}
+\end{figure}
+
+Iš diagramos išgauname lygtis [\ref{reverb_2}-\ref{reverb_4}], kurią išreiškiame Z ašyje. Viršutiniai nariai - $a$ koeficientai, apatiniai - $b$.
+
+
+\begin{eqnarray}
+\label{reverb_2}
+y[n] = x[n] + K \cdot y[n-N] \\
+y[z] = x(z)^0 + K \cdot y(z)^{-N} \\
+H[z] = \frac{1}{1-Kz^{-N}} \\
+a = [1] \\
+\label{reverb_4}
+b = [1,0,...,0,-K]
+\end{eqnarray}
+
+
+Tarp vieneto ir K kintamojo turime N-2 nulines reikšmes.
+
+Eksperimentiniu būtų susiradome reverberacijos efektą gerai išreiškiantį vėlinimo koeficientą: N = 4400 atskaitų. K koeficientą pasirinkome 0.7, nes tai sukelia aukštesnės amplitudės reverberaciją, kuri geriau girdisi.
+
+Žiūrint į \ref{reverb_3} pav, laiko srityje galime pastebėti naujų aukštesnės amplitudės bangų signalo pradžioje, o žvelgiant į dažnių sritį - didesnį skirtingo decibelų lygio reprezentavimą kintant signalo dažniui. Reverberacijos efektas suteikė signalui naujų verčių pasekoje pradinio akordo.
+
+Akivaizdu, kad K reikšmę palikus nuliu, signalas išliktų visiškai toks pat kaip prieš tai, o K=1 smarkiai moduliuotų signalą pagal reverberaciją.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.9\columnwidth]{reverb_3.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Gitaros akordo sumodeliuoto signalo laiko ir dažnių grafikai su reverberacijos efektu.}
+	\label{reverb_3}
+	\vspace{6pt}
+\end{figure}
+
+
+\subsection*{Amplitudinė ir žiedinė moduliacijos}
+
+Realizuojame du skirtingus moduliacijos metodus - amplitudinį bei žiedinį.
+
+Amplitudinė moduliacija aprašoma lygtimi \ref{ampl}. Žiedinė moduliacija aprašoma lygtimi \ref{ring}.
+
+
+\begin{eqnarray}
+y[n] = (1 + \alpha \cdot \sin(2 \pi n \frac{f_a}{f_d}))\cdot x[n]
+\label{ampl}
+\end{eqnarray}
+
+\begin{eqnarray}
+y[n] = \sin(2 \pi n \frac{f_m}{f_d})\cdot x[n]
+\label{ring}
+\end{eqnarray}
+
+
+
+Eksperimentavimo būdu, galime pastebėti, kad amplitudinės moduliacijos atveju, $\alpha$ koeficientas įtakoja moduliacijos intensyvumą. Tą taip pat galime pastebėti iš formulės, jeigu $\alpha$ koeficientas yra parenkamas 0, tada mūsų sinusoidinė išraiška tiesiog neįtakos įeinančio signalo iš gausime y[n] = x[n]. Tačiau keliant $\alpha$, stiprėja į reverberacijos efektą panašus efektas. Svarbų atkreipti dėmesį, kad vieneto pridėjimas šiuo atveju paverčia šį efektą savotiškai 'pridėtiniu', t.y jis tik pakoreguoja įeinantį signalą su papildomu skambesiu. Moduliavimo dažnis įtakoja šio efekto periodo ilgius. Mažesnis dažnis - ilgesni periodai.
+
+Žiedinės moduliacijos atveju, tiesioginis įeinančio signalo dauginimas, nepridedant vieneto paverčia tai į visišką signalo transformaciją, kurios metu mes priverčiame savotišką aido efektą pradiniam akordui. $\alpha$ koeficiento neegzistavimas panaikina bet kokį papildomą slopinimo efektą, dėl to garso slopinimas tiesiogiai priklauso nuo įeinančio signalo. 
+
+\ref{papildmod} pav. matome moduliacijų efektus pradiniam akordo signalui. Šiuo atveju buvo naudojamos: $fm=1hz, fa=10hz, \alpha=0.7$ koeficientų reikšmės. Amplitudinės moduliacijos atveju matome atsiradusį periodinį amplitudžių kitimą laike, o dažninė charakteristika parodo atsiradusias papildomas harmonikas tarp pagrindinių penkių. Žiedinės moduliacijos atveju, visas signalas radikaliai pakeistas į keletą intensyvių periodų, tačiau pačios harmonikos dažnių srityje stambiai nepakito, nes mes nepakeitėme pradinės harmonikos, o tiesiog pradėjom generuoji jos savotišką aidą.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.9\columnwidth]{papildmod.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Gitaros akordo sumodeliuoto signalo laiko ir dažnių grafikai su papildomomis moduliacijomis.}
+	\label{papildmod}
+	\vspace{6pt}
+\end{figure}
+
+
+\section*{Išvados}
+Šio laboratorinio darbo metu sumodeliavome atskirą gitaros stygą, pilna penkių stygų akordą ir pritaikėme įvairius signalo moduliacijos efektus.
+
+Palyginus paprastos funkcijos mums padėjo išgauti itin tikroviškus garsus tokius kaip reverberacija ir aidas.
+
+Taip pat pastebėjome, kad labai nedideli parametrų pakeitimai gali radikaliai pakeisti visą sugeneruotą signalą. Dažninė signalų charakteristika padeda pastebėti signalo pokyčius kurių galėjome nepastebėti iš laikinės diagramos. 
+Galiausiai, pastebėjome kaip svarbu pažvelgti į signalus iš arčiau. Mūsų sumodeliuoto akordo atveju, žiūrint tik į pilnų trejų sekundžių laiko diagramą, galima lengvai praleisti stambius moduliavimo efektus, kurie išryškėja tik pažvelgus į amplitudžių svyravimus iš arti. Pavyzdžiui, iškraipymo efektas gali įnešti didelį triukšmo kiekį į signalą, kuris gali būti nepastebėtas žiūrint į signalą 'iš toli'. Tik priartėjus pamatome, kaip amplitudžių peršokimo periodai gali prarasti tolydumą ir susidarę peršokimai sukelią triukšmo efektą.
+
+\section*{Literatūra}
+\bibliographystyle{IEEEtran_bp}
+\renewcommand\refname{}
+\vspace*{-24pt}
+\makeatother
+\bibliography{saltiniai} % bibliografijos tvarkymo failas
+
+\section*{Priedai}
+
+\subsection*{Pagrindinės programos kodas}
+\onecolumn
+%\lstinputlisting{./kodas/lab1_python_source.py} % nurodomas ir tiksli direktorija, kurioje yra kodas
+
+
+\end{document}

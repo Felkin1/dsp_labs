@@ -1,0 +1,1 @@
+hyph_lt, lt.aff ir lt failus reikia perkelti i direktorija, kurioje laikomi zodynai LaTeX aplinkai (pvz: C:\Program Files (x86)\TeXstudio\dictionaries).

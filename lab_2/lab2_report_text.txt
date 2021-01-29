@@ -1,0 +1,61 @@
+In the following laboratory work, we will be emplying various digital signal processing techinques to filter an electrocardiogram (EKG) signal. More specifically, we will be employing: a relatively low order finite impulse response (FIR), a comb infinite impulse reponse (IIR) and multirate FIR filters. We will conduct a careful study of said filters' characteristics and test their performance on a real EKG dataset as well as two standard synthesized testbench signals. The filters are implemented in the Python programming language with a heavy reliance on the Scipy library. Comments on the library specifics will be made.
+
+
+We start by implementing a 13th order lowpass FIR filter to eliminate high frequency noise from our digital signal. Figure \ref{f1} shows the structural diagram of said filter. Being as all the filter coeficients are varying multiplications of our input signal, they are all part of the "b" system parameters when designing digital filters using matlab or python numberical computing libraries. These coeficients require no modification. Coeficients "a" equal a list with a singular value = 1. Figure \ref{f2} shows the impulse response characteristic of our filter. Ploted are essentially the "b" coeficients our of filter. We used our own implementation written in python for the impulse response analysis: a unit impulse sequence is generated and filtered using the lfilter function from the scipy python numberical library using our b and a coeficients. The resulting filtered signal equals our impulse response.
+
+Following that, we generate the frequency and phase response graphs of our filter. The scipy function freqz is used for this purpose. Said function, given our filter coeficients, returns parameters w and h, equaling frequency and magnitude aspects of our filter. We apply formula \ref{m1} on our h values to convert them into the decibel scale. We keep the frequency parameters unnormalized to have a clear represetation of which frequencies our filter is targeting. The resulting values are ploted to generate the frequency response graph. For the phase response we apply formula \ref{m2} on our h values to obtain the phase response values at each frequency. Figure \ref{f3} features the two generated response graphs.
+
+Focusing on the frequency response graph first, we may notice three distinct portions of the filter. The first is the pass band, from frequencies 0 to 100Hz. We treat the filter's response at magnitude -3dB as the cutoff point where the pass band ends. Following that we have a transition zx band, during which values are being partially filtered. At around 150Hz we see the start of the cutoff band, symbolized by the start of a harmonic osilation. The peak of these harmonics marks the amount of attenuation applied on the given frequencies.
+
+In summary, the graph shows that our filter will pass all frequences from 0 to 100Hz, followed by a -50dB attentuation of the frequencies higher than 150Hz. Thus, our cutoff frequency is 100Hz, our pass band waving is [CALCULATE PASS BAND WAVING] and our cutoff's largest attenuation is -50dB. A lowpass FIR filter.
+
+The phase characteristic shows a partially direct phase response, which is important for judging if a given filter will not phase shift different signal components by varying degrees,as opposed to the same for each component. Given the partially direct response in our case, we conclude that the filter is not going to distort the signal.
+
+Lastly, we generate the z plane of our filter. To do this, we take our a and b coeficients again and calculate the roots of each array. Ploting the real and imaginary portions of each value against each other on a plane results in the zero values in the case of b coeficient roots and the poles in the case of a coeficients. The z plane can be seen in figure \ref{f4}. We note that a cuttoff is marked for real and imaginary absolute values larger than 1. Values falling outside of this range constitute as unstable and imply our filter becoming a generator.
+
+
+
+We now design a comb IIR filter for eliminating signal drift and an additional noise component of industrial voltage. The comb filter features a unique characteristic of filtering only specific periodic frequencies (and their adjacent frequencies) $f_0$ while the remaining are all passed. Figure \ref{f5} shows the theoretical frequency response characteristic of said comb filter. Parameter $K_0$ marks our passband attentuation (in our case 1, meaning no attenuation), $K_r$ marks the amplitude at which we judge our cutoff band width at each frequency period. In our case, this parameter has to equal -3dB. Parameter $\deltaf$ marks the width of frequencies being cutoff starting at amplitude $K_r$. Parameter $K$ marks the maximum attenuation at each cutoff frequency period. Lastly, parameter $f_0$ marks the actual cutoff frequency which we are filtering. Subsequent periods to filter are marked $kf_0$. $f_d$ marks our sampling frequency. We use the niquist rate of our sampling frequency for ploting the frequency spectrum.
+
+Figure \ref{f6} shows the structural diagram of our comb filter. We can see that the filter is an IIR filter given the fact the output of the filter is fed back into it via the $k_3$ boosted value. $Z^-N$. In total, we have three coeficients which we need to calculate and divide into $a$ and $b$ coeficient arrays.
+
+Equations \ref{m5} to \ref{mlast} were used for obtaining the $k_1, k_2, k_3$ coeficients. This includes all the math operations necessary to obtain the filter coeficients given a set of hyperparameters. Notable values are $f_d$ - our sampling frequency, $S$ - our attenation at the cutoff bands.
+
+We obtained the followed coeficients:
+
+
+$ FIX $ 
+
+$beta = 0.021
+k_1 = 0.979
+k_2 = 0.979
+k_3 = 0.958
+$
+
+For the sake of clarity, we also append the final b and a coeficient arrays:
+
+
+$ add coef array$
+
+We now look at the impulse, frequency and phase responses of our filter. Figure \ref{f6}. The impulse response has two unit impulses at the first and final n values. This aligns with our calculated b coeficient array.
+
+The frequency response ended up closely matching the theoretical frequency response graph as in Figure \ref{f5}. Notable is the difference in maximum attenuations are the cutoff frequencies. In theory, we were supposed to have around -50dB magnitudes at 50Hz periods. In our case, the comb filter has a -10dB attentuation at 100Hz and 150Hz frequencies and symetrically falls off, while having a full -50dB attenuation at frequency 0. Multiple attempts were made at trying to generate a filter with even attentuations at each period to not success. The author is confident in the calculated $k_1 to k_3$ coeficients and can only speculate that there is a difference in the matlab's filter and scipy's lfilter function implementations. As will be discussed in a later section, the scipy lfilter function does additional work in handing phase shifts and aliasing effect that can happen as a result of filtering. However, the filter was successful in eliminating the signal drift and did seem to filter the industrial voltage component to a degree as will be shown in the results section. Thus, the author concludes the result as satisfatory enough for the purposes of exploring the filter's inner workings.
+
+The zoomed in view of the frequency response at the 50th frequency shows a clear 0.67Hz cutoff band at the -3dB magnitude. The 0.67Hz value was chosen based on a standard # CLARIFY FURTHER, REF
+
+The phase response shows a harmonic phase following the cutoff frequency period. We expected the phases in radians to be even at the positive and negative peaks of each frequency period. The oscillation is concluded to be correlated to the symetric, but not equal magnitudes at the frequency domain.
+
+Lastly, the z plane shows the poles and zeroes all aligning very closely and staying within the absolute 1 value limits, signaling that the filter is stable.
+
+
+Lastly, we design a multirate lowpass FIR filter for eliminating system drift as opposed to using the comb IIR filter. The idea of our multirate filter is to decimate our input signal to a lower sampling frequency, then apply a higher order lowpass FIR filter and finally interpolate the filtered signal back into the original frequency. By doing the additional decimation and interpolation steps, we provide an essentially quantisized signal for the FIR filter to compute with much smaller computation requirements. Essentially, we trade precision for getting a relatively higher order filter for a given sampling frequency.
+
+Figure \ref{f7} shows a structural diagram of our filtering scheme. We divide our decimation and interpolation operations into two stages each to decrease the amount of relative resampling happening between stages. The reason for this is because we are required to apply an additional FIR filtering operation before each decimation and and after each interpolation operations to eliminate additional aliasing generated as a result of the resampling operations. These FIR filters would require larger orders, and thus more computations, if we did large sampling rate jumps at a time.
+
+A non-trivial decision is the selection of decimation and interpolation degrees. We solve \ref{m10} to obtain parameter $M$ - our resampling degree. In this equation, $f_sl$ equals our cutoff minimum frequency, $f_pr$ equals the pass band maximum frequency. We also know that our cutoff frequency proper should not be larger than 0.67Hz as discussed in the comb filter section. Using equations \ref{m11} to \ref{m14} we concluded that our $M$ should be around 50, $D_1$ - 10, $D_2$ - 5. While the actual $M$ value we obtained was 58, we round it to be divisable by 500 (our sampling rate).
+
+From a technical side, we employed the scipy resample_poly function for implementing decimation and interpolation in our multirate filter. This resampling function actually has a FIR filter inbuilt to be used after the actual resampling operation and even adjusts for aliasing. However, we still add our own additional filters after the decimation and before the interpolation operations, because we noticed additional phantoms after the interpolation operations. 
+
+
+
+

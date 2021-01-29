@@ -1,0 +1,503 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/W32TeX) (preloaded format=pdflatex 2018.2.8)  17 DEC 2020 04:36
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**./sablonas.tex
+(./sablonas.tex
+LaTeX2e <2017-04-15>
+Babel <3.17> and hyphenation patterns for 84 language(s) loaded.
+(d:/texlive/2017/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(d:/texlive/2017/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(d:/texlive/2017/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+(d:/texlive/2017/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(d:/texlive/2017/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
+)
+(d:/texlive/2017/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(d:/texlive/2017/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count87
+\Gm@cntv=\count88
+\c@Gm@tempcnt=\count89
+\Gm@bindingoffset=\dimen103
+\Gm@wd@mp=\dimen104
+\Gm@odd@mp=\dimen105
+\Gm@even@mp=\dimen106
+\Gm@layoutwidth=\dimen107
+\Gm@layoutheight=\dimen108
+\Gm@layouthoffset=\dimen109
+\Gm@layoutvoffset=\dimen110
+\Gm@dimlist=\toks15
+)
+(d:/texlive/2017/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2017/04/05 v2.0i Standard LaTeX package
+
+(d:/texlive/2017/texmf-dist/tex/latex/lithuanian/l7xenc.def
+File: l7xenc.def 2017/12/06 v2.0 LaTeX-LT file
+)
+(d:/texlive/2017/texmf-dist/tex/latex/base/t1enc.def
+File: t1enc.def 2017/04/05 v2.0i Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
+)
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 105.
+
+(d:/texlive/2017/texmf-dist/tex/latex/lm/t1lmr.fd
+File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+))
+(d:/texlive/2017/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2015/03/17 v1.2c Input encoding file
+\inpenc@prehook=\toks16
+\inpenc@posthook=\toks17
+
+(d:/texlive/2017/texmf-dist/tex/latex/ucs/utf8x.def
+File: utf8x.def 2004/10/17 UCS: Input encoding UTF-8
+))
+(d:/texlive/2017/texmf-dist/tex/latex/ucs/ucs.sty
+Package: ucs 2013/05/11 v2.2 UCS: Unicode input support
+
+(d:/texlive/2017/texmf-dist/tex/latex/ucs/data/uni-global.def
+File: uni-global.def 2013/05/13 UCS: Unicode global data
+)
+\uc@secondtry=\count90
+\uc@combtoks=\toks18
+\uc@combtoksb=\toks19
+\uc@temptokena=\toks20
+)
+(d:/texlive/2017/texmf-dist/tex/latex/psnfss/times.sty
+Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
+)
+(d:/texlive/2017/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2018/01/24 3.17 The Babel package
+
+(d:/texlive/2017/texmf-dist/tex/generic/babel/switch.def
+File: switch.def 2018/01/24 3.17 Babel switching mechanism
+)
+(d:/texlive/2017/texmf-dist/tex/latex/lithuanian/lithuanian.ldf
+Language: lithuanian 2017/12/06 v1.0 Lithuanian support from the babel system
+
+(d:/texlive/2017/texmf-dist/tex/generic/babel/babel.def
+File: babel.def 2018/01/24 3.17 Babel common definitions
+
+(d:/texlive/2017/texmf-dist/tex/generic/babel/switch.def
+File: switch.def 2018/01/24 3.17 Babel switching mechanism
+)
+\babel@savecnt=\count91
+\U@D=\dimen111
+
+(d:/texlive/2017/texmf-dist/tex/generic/babel/txtbabel.def)
+\bbl@dirlevel=\count92
+)))
+(d:/texlive/2017/texmf-dist/tex/latex/tools/indentfirst.sty
+Package: indentfirst 1995/11/23 v1.03 Indent first paragraph (DPC)
+)
+(d:/texlive/2017/texmf-dist/tex/latex/multirow/multirow.sty
+Package: multirow 2016/11/25 v2.2 Span multiple rows of a table
+\multirow@colwidth=\skip43
+\multirow@cntb=\count93
+\multirow@dima=\skip44
+\bigstrutjot=\dimen112
+)
+(d:/texlive/2017/texmf-dist/tex/latex/sectsty/sectsty.sty
+Package: sectsty 2002/02/25 v2.0.2 Commands to change all sectional heading sty
+les
+)
+(d:/texlive/2017/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
+
+(d:/texlive/2017/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
+
+(d:/texlive/2017/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(d:/texlive/2017/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 99.
+
+(d:/texlive/2017/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen113
+\Gin@req@width=\dimen114
+)
+(d:/texlive/2017/texmf-dist/tex/latex/oberdiek/epstopdf.sty
+Package: epstopdf 2016/05/15 v2.6 Conversion with epstopdf on the fly (HO)
+
+(d:/texlive/2017/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
+
+(d:/texlive/2017/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+)
+(d:/texlive/2017/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+
+(d:/texlive/2017/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+
+(d:/texlive/2017/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+)))
+(d:/texlive/2017/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+
+(d:/texlive/2017/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+
+(d:/texlive/2017/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+
+(d:/texlive/2017/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+(d:/texlive/2017/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2018/01/21 v0.26 Utility functions of pdfTeX for LuaTeX (HO
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 456.
+
+(d:/texlive/2017/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+)))
+(d:/texlive/2017/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2016/02/21 v3.3-144 Customizing captions (AR)
+
+(d:/texlive/2017/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2016/05/22 v1.7-166 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 67.
+\captionmargin=\dimen115
+\captionmargin@=\dimen116
+\captionwidth=\dimen117
+\caption@tempdima=\dimen118
+\caption@indent=\dimen119
+\caption@parindent=\dimen120
+\caption@hangindent=\dimen121
+)
+\c@ContinuedFloat=\count94
+)
+(d:/texlive/2017/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count95
+\lst@gtempboxa=\box26
+\lst@token=\toks21
+\lst@length=\count96
+\lst@currlwidth=\dimen122
+\lst@column=\count97
+\lst@pos=\count98
+\lst@lostspace=\dimen123
+\lst@width=\dimen124
+\lst@newlines=\count99
+\lst@lineno=\count100
+\lst@maxwidth=\dimen125
+
+(d:/texlive/2017/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
+\c@lstnumber=\count101
+\lst@skipnumbers=\count102
+\lst@framebox=\box27
+)
+(d:/texlive/2017/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2015/06/04 1.6 listings configuration
+))
+Package: listings 2015/06/04 1.6 (Carsten Heinz)
+
+(d:/texlive/2017/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+) (./sablonas.aux)
+\openout1 = `sablonas.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 47.
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Checking defaults for L7x/lmr/m/n on input line 47.
+LaTeX Font Info:    Try loading font information for L7x+lmr on input line 47.
+
+(d:/texlive/2017/texmf-dist/tex/latex/lm/l7xlmr.fd
+File: l7xlmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+)
+LaTeX Font Info:    ... okay on input line 47.
+LaTeX Font Info:    Try loading font information for T1+ptm on input line 47.
+
+(d:/texlive/2017/texmf-dist/tex/latex/psnfss/t1ptm.fd
+File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
+)
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: custom
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(51.21495pt, 495.07797pt, 51.21495pt)
+* v-part:(T,H,B)=(56.9055pt, 731.23584pt, 56.9055pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=495.07797pt
+* \textheight=731.23584pt
+* \oddsidemargin=-21.05504pt
+* \evensidemargin=-21.05504pt
+* \topmargin=-52.36449pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=4.0pt
+* \marginparsep=10.0pt
+* \columnsep=28.45274pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumntrue
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+(d:/texlive/2017/texmf-dist/tex/latex/ucs/ucsencs.def
+File: ucsencs.def 2011/01/21 Fixes to fontencodings LGR, T3
+)
+(d:/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count103
+\scratchdimen=\dimen126
+\scratchbox=\box28
+\nofMPsegments=\count104
+\nofMParguments=\count105
+\everyMPshowfont=\toks22
+\MPscratchCnt=\count106
+\MPscratchDim=\dimen127
+\MPnumerator=\count107
+\makeMPintoPDFobject=\count108
+\everyMPtoPDFconversion=\toks23
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: listings package is loaded.
+Package caption Info: End \AtBeginDocument code.
+\c@lstlisting=\count109
+ (d:/texlive/2017/texmf-dist/tex/latex/ucs/data/uni-1.def
+File: uni-1.def 2013/05/13 UCS: Unicode data U+0100..U+01FF
+)
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <14.4> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 49.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 49.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 49.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 49.
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 49.
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 51.
+LaTeX Font Info:    Font shape `T1/ptm/bx/it' in size <10> not available
+(Font)              Font shape `T1/ptm/b/it' tried instead on input line 60.
+
+Underfull \hbox (badness 2050) in paragraph at lines 61--62
+[]\T1/ptm/m/n/10 Gitaros skam-be-siui i²gau-ti nau-do-sim[]es Kar-plus ir
+ []
+
+<./paveikslai/strong_diagrama.png, id=1, 551.05875pt x 211.54031pt>
+File: ./paveikslai/strong_diagrama.png Graphic file (type png)
+<use ./paveikslai/strong_diagrama.png>
+Package pdftex.def Info: ./paveikslai/strong_diagrama.png  used on input line 6
+6.
+(pdftex.def)             Requested size: 186.65079pt x 71.65161pt.
+LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 67.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 75.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 75.
+[1{d:/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+
+ <./paveikslai/strong_diagrama.png>]
+<./paveikslai/d_b.png, id=21, 593.21625pt x 583.42969pt>
+File: ./paveikslai/d_b.png Graphic file (type png)
+<use ./paveikslai/d_b.png>
+Package pdftex.def Info: ./paveikslai/d_b.png  used on input line 164.
+(pdftex.def)             Requested size: 209.97992pt x 206.51807pt.
+<./paveikslai/d_b2.png, id=23, 604.50844pt x 595.47469pt>
+File: ./paveikslai/d_b2.png Graphic file (type png)
+<use ./paveikslai/d_b2.png>
+Package pdftex.def Info: ./paveikslai/d_b2.png  used on input line 177.
+(pdftex.def)             Requested size: 209.97992pt x 206.83826pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \hbox (badness 5064) in paragraph at lines 183--184
+[]\T1/ptm/m/n/10 Stebint daºni[] sri-tis, i² kar-to ga-li-me pa-steb[]eti,
+ []
+
+
+Underfull \hbox (badness 1997) in paragraph at lines 183--184
+\T1/ptm/m/n/10 kaip su-si-da-riu-sios har-mo-ni-kos tu-ri pe-rio-d¡ atitinkant[
+]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 190--191
+[]\T1/ptm/m/n/10 Akordui ge-ne-ruo-ti nau-do-si-me pen-kias sty-gas:
+ []
+
+
+Underfull \hbox (badness 4846) in paragraph at lines 190--191
+\T1/ptm/m/n/10 A,D,G,B,e. Styg[] daºniai pa-tei-kia-mi len-tel[]eje nr
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \hbox (badness 2205) in paragraph at lines 204--205
+\T1/ptm/m/n/10 muo-jant individuali[] styg[] amp-li-tu-des ties kiek-vie-nu
+ []
+
+<./paveikslai/akordas_1.png, id=25, 577.40718pt x 570.63188pt>
+File: ./paveikslai/akordas_1.png Graphic file (type png)
+<use ./paveikslai/akordas_1.png>
+Package pdftex.def Info: ./paveikslai/akordas_1.png  used on input line 211.
+(pdftex.def)             Requested size: 209.97992pt x 207.51703pt.
+[2 <./paveikslai/d_b.png> <./paveikslai/d_b2.png> <./paveikslai/akordas_1.png>]
+<./paveikslai/akordas_2.png, id=36, 578.16pt x 578.16pt>
+File: ./paveikslai/akordas_2.png Graphic file (type png)
+<use ./paveikslai/akordas_2.png>
+Package pdftex.def Info: ./paveikslai/akordas_2.png  used on input line 224.
+(pdftex.def)             Requested size: 209.97992pt x 209.97241pt.
+
+Underfull \hbox (badness 1184) in paragraph at lines 233--234
+[]\T1/ptm/m/n/10 I²kraipymo efek-tui i²gau-ti su-stip-rin-si-me anks-tes-niu
+ []
+
+
+Underfull \hbox (badness 1688) in paragraph at lines 235--236
+\T1/ptm/m/n/10 amplitudºi[] 'su-a²tr[]ejimas', dau-ge-liui tolygi[] per[]ejim[]
+
+ []
+
+
+Underfull \hbox (badness 2435) in paragraph at lines 235--236
+\T1/ptm/m/n/10 i² neigiam[] reik²mi[] [] tei-gia-mas pa-vir-tus [] stai-gius
+ []
+
+<./paveikslai/akordas_3.png, id=38, 656.4525pt x 606.01407pt>
+File: ./paveikslai/akordas_3.png Graphic file (type png)
+<use ./paveikslai/akordas_3.png>
+Package pdftex.def Info: ./paveikslai/akordas_3.png  used on input line 240.
+(pdftex.def)             Requested size: 209.97992pt x 193.84523pt.
+<./paveikslai/reverb_schema.png, id=40, 319.94531pt x 108.405pt>
+File: ./paveikslai/reverb_schema.png Graphic file (type png)
+<use ./paveikslai/reverb_schema.png>
+Package pdftex.def Info: ./paveikslai/reverb_schema.png  used on input line 254
+.
+(pdftex.def)             Requested size: 209.97992pt x 71.1472pt.
+
+Underfull \hbox (badness 1297) in paragraph at lines 280--281
+[]\T1/ptm/m/n/10 Akivaizdu, kad K rei-k²m¦ pa-li-kus nu-liu, sig-na-las
+ []
+
+<./paveikslai/reverb_3.png, id=42, 647.41875pt x 596.2275pt>
+File: ./paveikslai/reverb_3.png Graphic file (type png)
+<use ./paveikslai/reverb_3.png>
+Package pdftex.def Info: ./paveikslai/reverb_3.png  used on input line 285.
+(pdftex.def)             Requested size: 209.97992pt x 193.37134pt.
+[3 <./paveikslai/akordas_2.png> <./paveikslai/akordas_3.png> <./paveikslai/reve
+rb_schema.png> <./paveikslai/reverb_3.png>]
+<./paveikslai/papildmod.png, id=55, 611.28375pt x 605.26125pt>
+File: ./paveikslai/papildmod.png Graphic file (type png)
+<use ./paveikslai/papildmod.png>
+Package pdftex.def Info: ./paveikslai/papildmod.png  used on input line 320.
+(pdftex.def)             Requested size: 209.97992pt x 207.91026pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+(./sablonas.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 47--50
+[]\T1/ptm/m/n/10 scipy lfil-ter funk-ci-ja. Nuo-ro-da:
+ []
+
+
+Underfull \hbox (badness 6032) in paragraph at lines 47--50
+\T1/ptm/m/n/10 https://docs.scipy.org/doc/scipy/ re-fe-ren-ce/ge-ne-
+ []
+
+) [4 <./paveikslai/papildmod.png>] (./sablonas.aux) ) 
+Here is how much of TeX's memory you used:
+ 6463 strings out of 492980
+ 94291 string characters out of 6136208
+ 216072 words of memory out of 5000000
+ 9908 multiletter control sequences out of 15000+600000
+ 37648 words of font info for 44 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 42i,8n,40p,728b,640s stack positions out of 5000i,500n,10000p,200000b,80000s
+{d:/texlive/2017/texmf-dis
+t/fonts/enc/dvips/base/8r.enc}<d:/texlive/2017/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmmi10.pfb><d:/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmmi7.pfb><d:/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb
+><d:/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><d:/texliv
+e/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><d:/texlive/2017/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb><d:/texlive/2017/texmf-dist/f
+onts/type1/urw/times/utmb8a.pfb><d:/texlive/2017/texmf-dist/fonts/type1/urw/tim
+es/utmbi8a.pfb><d:/texlive/2017/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><d:
+/texlive/2017/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on sablonas.pdf (4 pages, 581474 bytes).
+PDF statistics:
+ 95 PDF objects out of 1000 (max. 8388607)
+ 51 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 100 words of extra memory for PDF output out of 10000 (max. 10000000)
+

@@ -1,0 +1,274 @@
+\documentclass[10pt,a4paper,twocolumn]{article}
+\setlength{\columnsep}{10mm}
+\usepackage[papersize={210mm,297mm},top=20mm,bottom=20mm,left=18mm,right=18mm]{geometry}
+\usepackage[L7x,T1]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage{times}
+\usepackage[english]{babel}
+\usepackage{indentfirst}
+\setlength{\parindent}{.5cm}
+\usepackage{multirow}
+
+\usepackage{sectsty}
+\sectionfont{\fontsize{10}{10}\selectfont}
+\subsectionfont{\fontsize{10}{10}\selectfont\textit}
+
+\usepackage{graphicx}
+\graphicspath{{./paveikslai/}} % jei paveikslėliai talpinami kitame aplanke
+\usepackage{epstopdf} % for postscript graphics files
+\DeclareGraphicsExtensions{.pdf,.eps,.png,.jpg,.mps}
+\usepackage[labelsep=period,font=small]{caption}
+\captionsetup[table]{justification=justified,singlelinecheck=true,skip=0pt,labelfont=bf}
+\captionsetup[figure]{name=Figure,skip=0pt,labelfont=bf}
+\setlength\belowcaptionskip{-10pt}
+
+%kodo įkėlimas
+\usepackage{listings}
+\lstset{language=Matlab}
+\lstset{flexiblecolumns=true}
+\lstset{morekeywords={matlab2tikz}}
+\lstset{flexiblecolumns=true}
+\lstset{basicstyle=\ttfamily\scriptsize }
+\lstset{lineskip=-4pt }
+
+%opening
+\title{{\large Digital Signal Processing 2020}\\ \vspace{-12pt} 
+{\normalsize{ Laboratory Work nr. 3}}\\
+{\Large \textbf{A Study of Adaptive Digital Filters}}}
+
+
+\author{\large \textbf{Lukas Stasytis, E MEI-0 gr.} Birutė Paliakaitė, PhD Student \\
+{\normalsize \textit{Kaunas University of Technology, Faculty of Electrical and Electronics Engineering}}}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introduction}
+
+In the following laboratory work, digital adaptive filters \cite{a1},\cite{a2} are used to remove engine noise from a plane cabin's sound signal in order to obtain a clear plane captain's sound signal. A Least Mean Squares (LMS), Normalized Least Mean Squares (NLMS) and De-correlated Recursive Least Squares (RLS) algorithms shall be employed to implement the digital adaptive filters. Evaluations of different hyperparameters and the effectiveness of each algorithm for the task of noise cancellation are measured. The filters are implemented in the Python programming language with a heavy reliance on the Scipy library[\cite{numpy},\cite{scipy},\cite{pyplot}].
+
+
+\section*{Problem statement}
+
+To implement and evaluate the adaptive filters, a dataset is required with a task to solve. In this report, a plane captain's audio signal is used. Three separate signals are presented: one of the captain, labeled $s(n)$, one of the engine sound, labeled $x(n)$ and one of the two combined, labeled $d(n)$. The pilot audio signal is effectively the target signal for the filters and would not normally be available, however the goal of this report is to evaluate the adaptive filters, thus a ground truth signal to measure the designed filter's error rate is required.
+
+In Figure \ref{f1} three sets of signals can be seen. The topmost left and right plots show the engine noise. Nothing can really be inferred from the plots, other than a small dip in amplitude around the 25000th time step. The second pair of graphs show the time and frequency domains of the cabin sound signal. Nothing can really be distinguished from the time domain, while the frequency domain shows a steadily decreasing amplitude of higher frequency noise. This alone suggests there are some more distinct components of the signal rather than pure random noise. The final pair of plots features the pilot's sound signal. This final signal would not normally be available when constructing an adaptive filter, given that it is essentially the result of the entire operation. Clear jumps in amplitude can be seen in the time domain, which could match a speaker's voice tone. A sound test of the signals confirmed it to be a clear 22 second recording of a captain speaking to plane passengers. To obtain a signal matching this captain signal as closely as possible, adaptive filters will be implemented and input the cabin sound signal as well as the engine signal. The output of said filters should be the captain's voice.
+
+Figure \ref{f2} features the system as a whole. Two source signals $x(n)$ and $s(n)$ merge into a single input signal $d(n)$ which is passed through the adaptive filter. The result should then be fed back into the adaptive filter to, as the name implies, adapt the filter to the signal. After some iterations, the adaptive filter should start to model the noise signal component $x(n)$ and eliminate it from the input signal, leaving only the true signal of interest - the captain's voice $s(n)$.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{f1.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{The Cabin, Engine and Pilot sound signals in time and frequency domains.}
+	\label{f1}
+	\vspace{6pt}
+\end{figure}
+
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{f2.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Diagram of the signal filtering scheme with the adaptive filter in place.}
+	\label{f2}
+	\vspace{6pt}
+\end{figure}
+
+\section*{LMS filter}
+
+The first filter to be implemented is the Least Mean Squares filter. 
+The filter features two hyperparameters: $\mu$ and $M$. $\mu$ represents the step size of the algorithm weight vector $w$'s minimization function. This is much the same as the step size in conventional gradiant descent algorithms. \cite{zhang2004solving}. Parameter $M$ is used to describe the size of the $w$ and $x_a$ vectors and is effectively the order of the filter. $x_a$ is a stack-style vector of the most recent $M$ discrete input signals. $M$, $\mu$, $x_a$ and $w$ are all initialized at the start of the algorithm. While $M$ and $\mu$ are chosen, vectors $x_a$ and $w$ are initialized as column vectors of zeroes. Equations \ref{e1} and \ref{e2}.
+
+\begin{eqnarray}
+\label{e1}
+w(0) = [0 0 ... 0]^T
+\end{eqnarray}
+
+\begin{eqnarray}
+\label{e2}
+x_a(0) = [0 0 ... 0]^T
+\end{eqnarray}
+
+
+The algorithm is implemented in a for loop, with an iteration count equaling the length of the input signal. Each iteration, the $w$ and $x_a$ vectors are updated while taking into account their previous states. Equation \ref{e3} features the $x_a$ vector's update function. Equations \ref{e4} to \ref{e5} feature the $w$ weight vector's set of update functions. $x_{pred}$ is the predicted $x$ noise component value at timestep $n$ by the filter. $y$ is the output signal of the filter. In \ref{e5} the output signal is used to update the weights of the filter and improve future $x_{pred}$ value accuracy.
+
+
+
+\begin{eqnarray}
+\label{e3}
+x_a(n) = [x_a(n), x_a(n-1),...,x_a(n-M+1)]^T \\
+\label{e4}
+x_{pred}(n) = w^T(n)x_a(n) \\
+y(n) = d(n) - x_{pred}(n) \\
+w(n+1) = w(n) + 2\mu \cdot y(n)x_a(n)
+\label{e5}
+\end{eqnarray}
+
+
+Additionally, a second, normalized, adaptive LMS filter is constructed by changing equation \ref{e5} for equation \ref{e6}. The modification makes parameter $\mu$'s effect on the slope descent vary depending on the energy of the signal's portion stored in the $x_a$ vector. This can, both, decrease the chance of overshooting the local minimum as well as speed up the descent.
+
+
+\begin{eqnarray}
+\label{e6}
+w(n+1) = w(n) + \frac{\mu}{x_a^T(n)\cdot x_a(n)} \cdot y(n)x_a(n)
+\end{eqnarray}
+
+Lastly, to accurately search for the optimal hyperparameters $\mu$ and $M$, the mean squared error (MSE) of the filter's output signal is measured versus the ground truth signal $s(n)$ given with the dataset. Equation \ref{e61} is used for calculating the MSE. The search for optimal hyperparameters is presented in the results section of the report.
+
+
+
+
+\begin{eqnarray}
+\label{e61}
+MSE = \frac{1}{N} \sum_{n=1}^{N}(s(n) - y(n))^2
+\end{eqnarray}
+
+
+
+
+
+
+\section*{RMS filter}
+
+A recursive mean squared (RMS) filter with additional pre-whitening is additionally constructed for effectiveness comparison. By starting with the baseline LMS filter outlined in the previous section, the following modification is made: An additional eye matrix of size $M$ x $M$ is constructed and divided by a $\gamma$ hyperparameter, equation \ref{e7}. This acts as an inversion correlation matrix which takes indirect effect in the weight updating equation \ref{e11} via parameters $u(n)$ and $v(n)$ . Due to the fact coefficient vectors $u$ and $v$ are affected by matrix $P$ which has it's own update function \ref{e12}, the modification effectively acts as an additional memory element for adjusting the weight vectors values based on past signal inputs further beyond the $M$ order of the filter timesteps. $y_{pred}$ and $y$ output value functions remain unchanged.
+
+\begin{eqnarray}
+\label{e7}
+P(0) = \gamma^{-1} \cdot I
+\end{eqnarray}
+
+Additional calculations as shown in equations \ref{e8} to \ref{e10} are done at each timestep. 
+
+
+\begin{eqnarray}
+\label{e8}
+v(n) = P(n-1) \cdot x_a(n) \\
+u(n) = P^T(n-1) \cdot v(n) \\
+k(n) = \frac{1}{\lambda + ||v(n)||^2 + \sqrt{\lambda}\sqrt{\lambda+||v(n)||^2}}
+\label{e10}
+\end{eqnarray}
+
+\begin{eqnarray}
+w(n) = w(n-1) + \frac{y(n)\cdot u(n)}{\lambda+||v(n)||^2}
+\label{e11}
+\end{eqnarray}
+
+\begin{eqnarray}
+P(n) = \frac{P(n-1) - k(n) \cdot v(n) \cdot u^T(n)}{\sqrt{\lambda}}
+\label{e12}
+\end{eqnarray}
+
+
+\section*{Results}
+\subsection*{Hyperparameter search}
+Using the previously outlined MSE function, multiple runs of each of the three filters are done on the dataset with varying parameters $\mu$, $M$ and $\gamma$ as well as $\lambda$ in the case of the RMS filter. Figure \ref{f3} features the results of varying parameters $\mu$ from 0.001 to 0.1 while $M$ was adjusted from 2 to 60. A lower MSE value is better. Looking at the plot, it quickly becomes clear that hyperparameter $M$ needs to be at least of the value 15 and that further increases past 20 do not yield any realistic gains in increasing the filter's effectiveness. It can also be seen that the overall error which the filters achieve by varying $\mu$ does not differ substantially and a higher $\mu$ value even increases the error rate as the order of the filter increases. However, this plot features only the total MSE of the whole dataset. Figure \ref{f4} is generated by limiting parameter $M$ to 20 and only varying $\mu$ and then looking at the error value of the filter at specific time intervals of the entire signal's time domain. In the case of figure \ref{f4}, the time increments are limited to 100ms each and total to 10s (the dataset goes to 22s but is limited to only the intial 10s for the figure for the sake of clarity). Two observations can be made from looking at the figure: a.) A lower $\mu$ value takes substantially longer to reach the local minimum, but remains stable thereafter, b.) a higher $\mu$ value reaches the local minimum much faster, but is prone to spikes in error around the signal at varying points. This matches the theory of gradient descent optimization and how too high of a minimization step can make the algorithm 'overshoot' the local minimum and possibly even diverge entirely. In the case of the dataset used in this report, a $\mu$ value of 0.01 and an $M$ value of 20 seem to provide the most stable results.
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{f3.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{LMS algorithm's MSE at varying M and $\mu$ values. A quick descent to a minimum can be seen around M=10.}
+	\label{f3}
+	\vspace{6pt}
+\end{figure}
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{f4.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{LMS algorithm's MSE at different timestep intervals with a fixed M and a varying $\mu$.}
+	\label{f4}
+	\vspace{6pt}
+\end{figure}
+
+Next, the Normalized LMS filter is used with the same set of parameters. The results were near identical in regards to which hyperparameter values are optimal relative to the regular LMS filter with a slightly higher error rate overall, thus, no further exploration of optimal hyperparameters for said filter is done.
+
+Lastly, the RMS filter is used. Given that the filter does not use parameter $\mu$ but instead uses $\lambda$ and $\gamma$, an initial MSE test scheme was done with $\lambda$ as the target parameter. Figure \ref{f5} illustrates the results when varying $\lambda$ from 0.95 to 1. Higher $\lambda$ values show a significantly better result while $M$ shows a similar optimal point of around the order of 15 to 20. $M$ = 20 is chosen for further parameter searching to have a better comparison with the previous LMS filter implementations. The $\lambda$ parameter is further evaluated with a now fixed $M$=20 value and plotted with timestep intervals as was done in figure \ref{f4}. The y axis scale is also adjusted to be logarithmic, as this would give a more clear picture of which $\lambda$ values are performing best. Figure \ref{f6} is the result. It can be seen that the higher the $\lambda$ value, the better the filter performs. It can also be noticed that the filter minimizes error extremely fast relative to the LMS filter. The choice is made to fix $\lambda$ to 1 and plot the MSE in time intervals when varying $\gamma$. Figure \ref{f7} features the result of varying $\gamma$ from 0.0001 to 1. The only observation to be made is that $\gamma$ = 1 causes the filter to take longer to reach the minimum, but apart from that, $\gamma$ has no effect on a filter's ability to converge. Given that the literature recommends small $\gamma$ values, a value of 0.01 is kept.
+
+With all the filter parameters explored, their MSE is compared versus each other. Table 1 features the results of lowest MSE values achieved with each filter. From the results, the LMS standard algorithm seems to perform the best, slightly ahead of the normalized version. The RMS algorithm performed substantially worse, although in the same order of magnitude. It should be noted, looking at Figure \ref{f8}, that the LMS and nLMS algorithms have an initial 'boom' sound at the start of the output signal relative to the ground truth. The RMS has no such boom, given the substantially faster convergence time.
+
+
+
+
+\begin{table}[!h]
+\label{tabl1}
+\caption{Smallest MSE values achieved with each adaptive filter}
+\begin{tabular}{ccccc}
+\hline
+\multicolumn{1}{c}{} LMS & 3.10 \cdot 10^{-4} &  &  &  \\ \hline
+nLMS & 3.91 \cdot 10^{-4}  &  &  &  \\ \hline
+RMS & 8.13 \cdot 10^{-4} &  &  &  \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{f5.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{RMS algorithm's MSE with varying M and $\lambda$ values. A similar result as with the LMS algorithm.}
+	\label{f5}
+	\vspace{6pt}
+\end{figure}
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{f6.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{RMS algorithm's MSE at various timestep intervals with a fixed M value and varying $\lambda$. }
+	\label{f6}
+	\vspace{6pt}
+\end{figure}
+
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{f7.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{RMS algorithm's MSE at various timestep intervals with a fixed M and $\lambda$ values while varying $\gamma$. A faster drop-off can be observed for lower $\gamma$ values, but all values reach the same final MSE values.}
+	\label{f7}
+	\vspace{6pt}
+\end{figure}
+
+
+\begin{figure} % norint paveikslėlio per du stulpelius, rašoma figure*
+	[!h]
+	\centering
+	\includegraphics*[width=.8\columnwidth]{f8.png} % .5\columnwidth reguliuoja paveikslėlio plotį
+	\caption{Output signal of the LMS filter as well as the ground truth provided in the dataset. A spike at the start of the signal can be observed that quickly descends as the filter adapts to the signal.}
+	\label{f8}
+	\vspace{6pt}
+\end{figure}
+
+\section*{Discussion}
+\subsection*{Python}
+Python was the language of choice for the assignment given it's open-source nature, ample literature and ease of use for prototyping algorithms. Two key nuances of Python's numerical computing library Numpy have to be noted. The first is array initialization. When a vector of 1 dimension is initialized in Numpy, it has to be explicitly stated as size (1,X) where X is the length of the vector. Conventional initialization methods like the function $zeroes(X)$ will return a numpy array of the shape (X,). This is extremely important, because this type of numpy array shape blocks any sort of transposition of the vector. In other words, the vector is treated as a row vector and never as a column vector. For the $transpose()$ function to turn a vector from a row vector to a column vector, a 2 dimensional array has to be specified by explicitly stating that one of the dimensions is of size 1. In most applications, this is not a problem, because Numpy supports array broadcasting and reshapes the '1.5 dimension' array to fit any operation being applied on it when taking into account the second term, for example a different array. It is specifically when operations involving column vector x matrix or matrix multiplications as opposed to dot  products are used that this reshaping can lead to unexpected outcomes. What is even more important is that Python will not throw errors due to array incompatibly, but silently reshape the arrays to fit the operation. This can lead to code that compiles, but outputs wrong results at runtime.
+
+
+The second point is the need to be explicit about the types of operations being done on matrices. By default, a multiplication operation between two numpy arrays will result in a regular matrix multiplication. $dot()$ and $multiply()$ need to be specified to achieve dot product and element-wise multiplications respectively.
+
+It is of the utmost importance when designing mathematical algorithms using the numpy library to pay careful attention to how the arrays are presented and which matrix multiplication functions are being called.
+
+\section*{Conclusions}
+In this laboratory work, three separate adaptive filters were used to filter out engine noise from a cabin input sound signal on a plane to obtain the plane captain's voice signal. All three filters showed remarkable effects of quickly modeling the engine noise component and cleanly filtering the input signal. The hyperparameter search proved to be highly important when optimizing the filters, with vast performance differences, especially when considering the $M$ parameter. The choice of using the Python programming language for the assignment proved to not be without issues, notable being the specifics of initiating column arrays and making sure the right matrix multiplication type is used rather than Python's assumptions. 
+
+\section*{Bibliography}
+\bibliographystyle{IEEEtran_bp}
+\renewcommand\refname{}
+\vspace*{-24pt}
+\makeatother
+\bibliography{saltiniai} % bibliografijos tvarkymo failas
+
+\section*{Appendix}
+
+\subsection*{Source code}
+\onecolumn
+%\lstinputlisting{./kodas/lab3_python_source.py} % nurodomas ir tiksli direktorija, kurioje yra kodas
+
+
+\end{document}
